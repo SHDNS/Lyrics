@@ -1,0 +1,75 @@
+const { MessageEmbed } = require("discord.js");
+
+const Color = `RANDOM`;
+
+const Genius = new (require("genius-lyrics")).Client(
+
+  "여기에 니토큰!"
+
+);
+
+/*
+
+How To Get Genius Token?
+
+Go To : https://docs.genius.com/
+
+And Connect With Your Genius Account | Sign Up If You Don't Have Genius Account | Sign In If You Have Genius Account!
+
+After Linking Account | Authorization: Bearer [Copy This] And Paste Token | https://cdn.discordapp.com/attachments/715964338887852144/734737732819222528/unknown.png
+
+*/
+
+module.exports = {
+
+  name: "lyrics",
+
+  category: "info",
+
+  run: async (client, message, args) => {
+
+    if (!args[0]) return message.channel.send(`Please Give Me A Song Name!`);
+
+    let Name = args.join(" ");
+
+    Genius.tracks.search(Name).then(results => {
+
+      const song = results[0];
+
+      song
+
+        .lyrics()
+
+        .then(lyrics => {
+
+          message.channel.send(
+
+            new MessageEmbed()
+
+              .setColor(Color)
+
+              .setTitle(`${song.title} Lyrics`)
+
+              .setDescription(
+
+                lyrics.length > 1900 ? `${lyrics.substr(0, 1900)}...` : lyrics
+
+              )
+
+              .setFooter(`Song Creator : ${song.artist.name}`)
+
+              .setThumbnail(song.humbnail)
+
+              .setTimestamp()
+
+          );
+
+        })
+
+        .catch(err => console.error(err))
+
+    });
+
+  }
+
+};
